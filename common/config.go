@@ -12,8 +12,15 @@ type Telegram struct {
 	ClientTimezone string `toml:"client_timezone"`
 }
 
+type AuthorizedClient struct {
+	TelegramId   string `toml:"telegram_id"`
+	DropboxToken string `toml:"dropbox_token"`
+	EcovacsToken string `toml:"ecovacs_token"`
+}
+
 type Config struct {
-	Telegram Telegram `toml:"telegram"`
+	Telegram Telegram           `toml:"telegram"`
+	Clients  []AuthorizedClient `toml:"authorized_clients"`
 }
 
 func NewConfigFromFile(path string) (*Config, error) {
