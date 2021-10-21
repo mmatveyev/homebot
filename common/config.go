@@ -1,42 +1,24 @@
 package common
 
 import (
-	"errors"
-	"github.com/BurntSushi/toml"
-	"os"
+	"github.com/caarlos0/env/v6"
 )
 
 type Telegram struct {
-	Token          string `toml:"token"`
-	Debug          bool   `toml:"debug"`
-	ClientTimezone string `toml:"client_timezone"`
-}
-
-type AuthorizedClient struct {
-	TelegramId   string `toml:"telegram_id"`
-	DropboxToken string `toml:"dropbox_token"`
-	EcovacsToken string `toml:"ecovacs_token"`
+	Token          string `env:"TELEGRAM_TOKEN"`
+	Debug          bool   `env:"TELEGRAM_DEBUG"`
+	ClientTimezone string `env:"TELEGRAM_CLIENT_TIMEZONE"`
 }
 
 type Config struct {
-	Telegram Telegram           `toml:"telegram"`
-	Clients  []AuthorizedClient `toml:"authorized_clients"`
+	Telegram Telegram
 }
 
-func NewConfigFromFile(path string) (*Config, error) {
-	var result = new(Config)
-	if _, err := toml.DecodeFile(path, &result); err != nil {
+func GetConfig() (*Config, error) {
+	config := new(Config)
+	err := env.Parse(config)
+	if err != nil {
 		return nil, err
 	}
-	err := envConfig(result)
-	return result, err
-}
-
-func envConfig(config *Config) error {
-	if v := os.Getenv("HOMEBOT_TELEGRAM_TOKEN"); v != "" {
-		config.Telegram.Token = v
-	} else if config.Telegram.Token == "" {
-		return errors.New("Telegram token is undefined")
-	}
-	return nil
+	return config, nil
 }

@@ -1,7 +1,6 @@
 package application
 
 import (
-	"flag"
 	"github.com/mmatveyev/homebot/common"
 	"github.com/mmatveyev/homebot/telegram"
 	"log"
@@ -13,11 +12,7 @@ import (
 var signalChan = make(chan os.Signal, 1)
 
 func Run() int {
-	var configPath string
-	flag.StringVar(&configPath, "c", "config.toml", "Path to configuration file")
-	flag.Parse()
-
-	config, err := common.NewConfigFromFile(configPath)
+	config, err := common.GetConfig()
 	if err != nil {
 		log.Fatal(err.Error())
 		return 1
